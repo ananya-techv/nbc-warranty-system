@@ -22,6 +22,11 @@ def get_db():
     return conn
 
 
+import os
+if not os.path.exists(DATABASE):
+    import init_db  # running this module seeds the database on first startup
+
+
 def get_warranty_status(warranty_expiry_str):
     """Classify a warranty as active / expiring / expired based on today's date."""
     expiry = date.fromisoformat(warranty_expiry_str)
