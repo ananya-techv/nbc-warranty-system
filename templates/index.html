@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Home - NBC Warranty System{% endblock %}
+{% block content %}
+<h2 class="mb-4">Dashboard Overview</h2>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card p-3">
+            <div class="text-muted small">Total Installations</div>
+            <div class="fs-2 fw-bold">{{ total_installations }}</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3">
+            <div class="text-muted small">Bearings Available (unused)</div>
+            <div class="fs-2 fw-bold">{{ total_bearings_available }}</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3">
+            <div class="text-muted small">Top Mechanic</div>
+            <div class="fs-4 fw-bold">
+                {% if top_mechanics %}{{ top_mechanics[0]['name'] }}{% else %}--{% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card p-3 mb-4">
+    <h5>Loyalty Leaderboard (Top 3)</h5>
+    <ul class="list-group list-group-flush">
+        {% for m in top_mechanics %}
+        <li class="list-group-item d-flex justify-content-between">
+            <span>{{ m['name'] }}</span>
+            <span class="badge bg-primary rounded-pill">{{ m['loyalty_points'] }} pts</span>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% if session.get('mechanic_id') %}
+<a href="{{ url_for('install_page') }}" class="btn btn-accent">+ New Installation</a>
+{% else %}
+<a href="{{ url_for('mechanic_login') }}" class="btn btn-accent">Mechanic Login to Start Installation</a>
+{% endif %}
+{% endblock %}

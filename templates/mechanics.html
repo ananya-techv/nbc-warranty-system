@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Mechanics{% endblock %}
+{% block content %}
+<h2 class="mb-4">Mechanic Loyalty Leaderboard</h2>
+
+<div class="card p-3">
+    <table class="table table-hover">
+        <thead><tr><th>#</th><th>Mechanic</th><th>Username</th><th>Loyalty Points</th></tr></thead>
+        <tbody>
+            {% for m in mechanics %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ m['name'] }}</td>
+                <td>{{ m['username'] }}</td>
+                <td><span class="badge bg-primary">{{ m['loyalty_points'] }} pts</span></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

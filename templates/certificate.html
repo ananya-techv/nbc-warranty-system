@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Certificate #{{ record['id'] }}{% endblock %}
+{% block content %}
+<div class="certificate-box mx-auto" style="max-width: 700px;">
+    <div class="text-center mb-4">
+        <h3 style="color: var(--nbc-blue);">NBC Bearings</h3>
+        <h5>Digital Installation Certificate</h5>
+        <span class="badge
+            {% if status == 'active' %}bg-success
+            {% elif status == 'expiring' %}bg-warning text-dark
+            {% else %}bg-danger{% endif %}">
+            Warranty {{ status|capitalize }}
+        </span>
+        {% if status != 'expired' %}
+        <div class="text-muted small mt-1">{{ days_left }} days remaining</div>
+        {% endif %}
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <table class="table table-borderless mb-0">
+                <tr><th>Certificate No.</th><td>{{ cert_no }}</td></tr>
+                <tr><th>Bearing Code</th><td>{{ record['bearing_code'] }}</td></tr>
+                <tr><th>SKU</th><td>{{ record['sku'] }}</td></tr>
+                <tr><th>Installed By</th><td>{{ record['mechanic_name'] }}</td></tr>
+                <tr><th>Location</th><td>{{ record['location'] or '--' }}</td></tr>
+                <tr><th>Installation Date</th><td>{{ record['install_date'] }}</td></tr>
+                <tr><th>Warranty Expiry</th><td>{{ record['warranty_expiry'] }}</td></tr>
+            </table>
+        </div>
+        <div class="col-md-4 text-center">
+            <img src="{{ qr_image }}" alt="Certificate QR Code" class="img-fluid" style="max-width: 150px;">
+            <div class="text-muted small mt-1">Scan to verify</div>
+        </div>
+    </div>
+
+    <p class="text-muted small text-center mt-4 mb-0">
+        This certificate confirms the above NBC bearing was verified and installed through
+        the NBC Digital Installation Certificate & Warranty System.
+    </p>
+</div>
+
+<div class="text-center mt-4 no-print">
+    {% if session.get('is_admin') %}
+    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary">Back to Dashboard</a>
+    {% endif %}
+    <button onclick="window.print()" class="btn btn-accent">Print / Save as PDF</button>
+</div>
+
+<style>
+    @media print {
+        .navbar, .accent-bar, .no-print { display: none !important; }
+        .certificate-box { border: 2px solid #000; }
+    }
+</style>
+{% endblock %}

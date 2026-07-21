@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}Warranty Dashboard{% endblock %}
+{% block content %}
+<h2 class="mb-4">Warranty Tracking Dashboard</h2>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card p-3 text-center">
+            <div class="text-muted small">Active</div>
+            <div class="fs-3 fw-bold text-success">{{ counts.active }}</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 text-center">
+            <div class="text-muted small">Expiring Soon</div>
+            <div class="fs-3 fw-bold text-warning">{{ counts.expiring }}</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 text-center">
+            <div class="text-muted small">Expired</div>
+            <div class="fs-3 fw-bold text-danger">{{ counts.expired }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="card p-3">
+    <input type="text" id="searchBox" class="form-control mb-3"
+           placeholder="Search by bearing code or mechanic name...">
+
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Bearing Code</th>
+                <th>SKU</th>
+                <th>Mechanic</th>
+                <th>Location</th>
+                <th>Install Date</th>
+                <th>Warranty Expiry</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="recordsTableBody">
+            {% for r in records %}
+            <tr data-search="{{ (r.bearing_code ~ ' ' ~ r.mechanic_name)|lower }}">
+                <td>{{ r.bearing_code }}</td>
+                <td>{{ r.sku }}</td>
+                <td>{{ r.mechanic_name }}</td>
+                <td>{{ r.location or '--' }}</td>
+                <td>{{ r.install_date }}</td>
+                <td>{{ r.warranty_expiry }}</td>
+                <td>
+                    <span class="badge
+                        {% if r.status == 'active' %}bg-success
+                        {% elif r.status == 'expiring' %}bg-warning text-dark
+                        {% else %}bg-danger{% endif %}">
+                        {{ r.status|capitalize }}
+                    </span>
+                </td>
+                <td><a href="{{ url_for('certificate', installation_id=r.id) }}" class="btn btn-sm btn-outline-primary">Certificate</a></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="8" class="text-center text-muted py-4">No installations yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div id="noResults" class="text-center text-muted py-3" style="display: none;">No matching installations.</div>
+</div>
+
+<script>
+// Feature: dashboard search filter - purely client-side, filters rows already on the page
+// by matching against a lowercase "bearing_code + mechanic_name" string stored per row
+const searchBox = document.getElementById('searchBox');
+const rows = document.querySelectorAll('#recordsTableBody tr[data-search]');
+const noResults = document.getElementById('noResults');
+
+searchBox.addEventListener('input', () => {
+    const query = searchBox.value.trim().toLowerCase();
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+        const matches = row.dataset.search.includes(query);
+        row.style.display = matches ? '' : 'none';
+        if (matches) visibleCount++;
+    });
+
+    noResults.style.display = (visibleCount === 0) ? 'block' : 'none';
+});
+</script>
+{% endblock %}
