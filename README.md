@@ -1,7 +1,7 @@
 # NBC Digital Installation Certificate & Warranty System
 
 A Flask + SQLite web app implementing the "Digital Installation Certificate & Mechanic Loyalty"
-module from Team Ideators' NBC Idea Factory Season 10 pitch (Top 25, National).
+module from Team Ideators' NBC Idea Factory Season 10 pitch (Top 8, National Finalist).
 
 ## Features
 1. Bearing code verification (live check, valid + not already used)
